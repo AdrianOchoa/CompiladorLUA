@@ -1,0 +1,607 @@
+//Sintáctico, Proyecto Final//Cuerpo principal
+options {
+	STATIC = false;
+}
+PARSER_BEGIN(AnalizadorLUA)
+	package compiler;
+	
+	import java.util.ArrayList;
+	
+	public class AnalizadorLUA {
+	
+		static ArrayList<String> lista = new ArrayList();
+		private static final StringBuilder erroresSintacticos;
+		public static int contadorErrores;
+		
+		static {
+			erroresSintacticos = new StringBuilder();
+			contadorErrores = 0;
+		}
+	
+		public static void main (String args []) throws ParseException {
+			try {
+				AnalizadorLUA al = new AnalizadorLUA(System.in);
+				al.ejecutarAnalisis();
+			} catch (ParseException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+		
+		public static void registraLogSintactico(String mensaje){
+            erroresSintacticos.append(mensaje).append("\n");
+        }
+		
+		public static void registraErrorSintactico(String mensaje, Token token){
+			contadorErrores++;
+            StringBuilder sb = new StringBuilder()
+                .append(mensaje)
+				.append("\n")
+                .append("Linea: ").append(token.beginLine)
+				.append("\n")
+                .append("   Columna: ").append(token.beginColumn);
+                registraLogSintactico(sb.toString());
+        }
+		
+		public static ArrayList<String> getLista() {
+			return lista;
+		}
+		
+		public static StringBuilder getErrores () {
+			return erroresSintacticos;
+		}
+		
+		void skipTo(int kind) {
+        Token tok = getToken(0);
+        while (tok.kind != EOF && tok.kind != kind) {
+            tok = getNextToken();
+            System.out.println("Saltanto token: " + tok.image);
+        }
+    }
+
+    void skipTo(String st) {
+        Token tok = getToken(0);
+        System.out.println("Token saltado " + tok.image);
+        while (tok.kind != EOF && !tok.image.equals(st)) {
+            tok = getNextToken();
+        }
+    }
+
+    void skipTo(int[] left, int[] right) {
+        Token prev = getToken(0);
+        Token next = getToken(1);
+        boolean flag = false;
+        if (prev.kind == EOF || next.kind == EOF) {
+            flag = true;
+        }
+        for (int i = 0; i < left.length; i++) {
+            if (prev.kind == left[i]) {
+                flag = true;
+            }
+        }
+        for (int i = 0; i < right.length; i++) {
+            if (next.kind == right[i]) {
+                flag = true;
+            }
+        }
+
+        while (!flag) {
+            System.err.println("Token saltado: " + prev);
+            getNextToken();
+            prev = getToken(0);
+            next = getToken(1);
+            if (prev.kind == EOF || next.kind == EOF) {
+                flag = true;
+            }
+            for (int i = 0; i < left.length; i++) {
+                if (prev.kind == left[i]) {
+                    flag = true;
+                }
+            }
+            for (int i = 0; i < right.length; i++) {
+                if (next.kind == right[i]) {
+                    flag = true;
+                }
+            }
+        }
+	}
+		
+}
+PARSER_END(AnalizadorLUA)
+
+//Tokens de palabras reservadas
+
+TOKEN : {
+	<AND : "and"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<BREAN : "break"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<DO : "do"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<ELSE : "else"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<ELSEIF : "elseif"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<END : "end"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<FALSE : "false"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<FOR : "for"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<FUNCTION : "function"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<IF : "if"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<IN : "in"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<LOCAL : "local"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<NIL : "nil"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<NOT : "not"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<OR : "or"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<REPEAT : "repeat"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<RETURN : "return"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<THEN : "then"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<TRUE : "true"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<UNTIL : "until"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<WHILE : "while"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<PRINT : "print"> {
+		System.out.println("Palabra reservada --> " + image);
+		lista.add("Palabra reservada --> " + image);
+	}
+	|<LENGHT : "#"> {
+		System.out.println("Simbolo reservado --> " + image);
+		lista.add("Simbolo reservado --> " + image);
+	}
+}
+
+//Tokens para operadores matemáticos
+TOKEN : {
+	<ASIGNACION : "="> {
+		System.out.println("Asignacion --> " + image);
+		lista.add("Asignacion --> " + image);
+	}
+	|<SUMA : "+"> {
+		System.out.println("Operador Aritmetico --> " + image);
+		lista.add("Operador Aritmetico --> " + image);
+	}
+	|<RESTA : "-"> {
+		System.out.println("Operador Aritmetico --> " + image);
+		lista.add("Operador Aritmetico --> " + image);
+	}
+	|<MULTIPLICACION : "*"> {
+		System.out.println("Operador Aritmetico --> " + image);
+		lista.add("Operador Aritmetico --> " + image);
+	}
+	|<DIVISION : "/"> {
+		System.out.println("Operador Aritmetico --> " + image);
+		lista.add("Operador Aritmetico --> " + image);
+	}
+	|<MODULO : "%"> {
+		System.out.println("Operador Aritmetico --> " + image);
+		lista.add("Operador Aritmetico --> " + image);
+	}
+	|<INCREMENTO : "++"> {
+		System.out.println("Operador Aritmetico --> " + image);
+		lista.add("Operador Aritmetico --> " + image);
+	}
+	|<DECREMENTO : "--"> {
+		System.out.println("Operador Aritmetico --> " + image);
+		lista.add("Operador Aritmetico --> " + image);
+	}
+	|<SUMA_IGUAL : "+="> {
+		System.out.println("Operador Aritmetico --> " + image);
+		lista.add("Operador Aritmetico --> " + image);
+	}
+	|<RESTA_IGUAL : "-="> {
+		System.out.println("Operador Aritmetico --> " + image);
+		lista.add("Operador Aritmetico --> " + image);
+	}
+	|<MULTIPLICACION_IGUAL : "*="> {
+		System.out.println("Operador Aritmetico --> " + image);
+		lista.add("Operador Aritmetico --> " + image);
+	}
+	|<DIVISION_IGUAL : "/="> {
+		System.out.println("Operador Aritmetico --> " + image);
+		lista.add("Operador Aritmetico --> " + image);
+	}
+	|<MODULO_IGUAL : "%="> {
+		System.out.println("Operador Aritmetico --> " + image);
+		lista.add("Operador Aritmetico --> " + image);
+	}
+}
+
+//Tokens para comparaciones
+TOKEN : {
+	<IGUAL_A : "=="> {
+		System.out.println("Operador para comparacion --> " + image);
+		lista.add("Operador para comparacion --> " + image);
+	}
+	|<MENOR_IGUAL : "<="> {
+		System.out.println("Operador para comparacion --> " + image);
+		lista.add("Operador para comparacion --> " + image);
+	}
+	|<MAYOR_IGUAL : ">="> {
+		System.out.println("Operador para comparacion --> " + image);
+		lista.add("Operador para comparacion --> " + image);
+	}
+	|<MENOR : "<"> {
+		System.out.println("Operador para comparacion --> " + image);
+		lista.add("Operador para comparacion --> " + image);
+	}
+	|<MAYOR : ">"> {
+		System.out.println("Operador para comparacion --> " + image);
+		lista.add("Operador para comparacion --> " + image);
+	}
+	|<DIFERENTE : "~="> {
+		System.out.println("Operador para comparacion --> " + image);
+		lista.add("Operador para comparacion --> " + image);
+	}
+	|<OR_LOGICO : "||"> {
+		System.out.println("Operador logico --> " + image);
+		lista.add("Operador logico --> " + image);
+	}
+	|<AND_LOGICO : "&&"> {
+		System.out.println("Operador logico --> " + image);
+		lista.add("Operador logico --> " + image);
+	}
+	|<CONCATENA_STRINGS : ".."> {
+		System.out.println("Concatenador de Strings --> " + image);
+		lista.add("Concatenador de Strings --> " + image);
+	}
+}
+
+//Tokens para puntos
+TOKEN : {
+	<PARENTESIS_APERTURA : "("> {
+		System.out.println("Puntuacion --> " + image);
+		lista.add("Puntuacion --> " + image);
+	}
+	|<PARENTESIS_CIERRE : ")"> {
+		System.out.println("Puntuacion --> " + image);
+		lista.add("Puntuacion --> " + image);
+	}
+	|<LLAVE_APERTURA : "{"> {
+		System.out.println("Puntuacion --> " + image);
+		lista.add("Puntuacion --> " + image);
+	}
+	|<LLAVE_CIERRE : "}"> {
+		System.out.println("Puntuacion --> " + image);
+		lista.add("Puntuacion --> " + image);
+	}
+	|<CORCHETE_ABRE : "["> {
+		System.out.println("Puntuacion --> " + image);
+		lista.add("Puntuacion --> " + image);
+	}
+	|<CORCHETE_CIERRE : "]"> {
+		System.out.println("Puntuacion --> " + image);
+		lista.add("Puntuacion --> " + image);
+	}
+	|<DELIMITADOR : ";"> {
+		System.out.println("Puntuacion --> " + image);
+		lista.add("Puntuacion --> " + image);
+	}
+	|<DOS_PUNTOS : ":"> {
+		System.out.println("Puntuacion --> " + image);
+		lista.add("Puntuacion --> " + image);
+	}
+	|<PUNTO : "."> {
+		System.out.println("Puntuacion --> " + image);
+		lista.add("Puntuacion --> " + image);
+	}
+	|<COMA : ","> {
+		System.out.println("Puntuacion --> " + image);
+		lista.add("Puntuacion --> " + image);
+	}
+}
+
+//Tokens expresiones regulares
+TOKEN : {
+	<VALOR_ENTERO : (["0"-"9"])+> {
+		System.out.println("Valor --> " + image);
+		lista.add("Valor --> " + image);
+	}
+	|<VALOR_FLOTANTE : ((["0"-"9"])+["."](["0"-"9"])+)> {
+		System.out.println("Valor --> " + image);
+		lista.add("Valor --> " + image);
+	}
+	|<VALOR_CADENA : (["\""](["a"-"z","A"-"Z","0"-"9"," ","!"-"?"])+["\""])> {
+		System.out.println("Valor --> " + image);
+		lista.add("Valor --> " + image);
+	}
+	|<VALOR_CARACTER : (["'"]["a"-"z","A"-"Z","0"-"9"," "]["'"])> {
+		System.out.println("Valor --> " + image);
+		lista.add("Valor --> " + image);
+	}
+	|<IDENTIFICADOR : (["#"])?["a"-"z", "A"-"Z"](["a"-"z", "A"-"Z", "0"-"9", "_"])*> {
+		System.out.println("Identificador --> " + image);
+		lista.add("Identificador --> " + image);
+	}
+}
+
+//Skips
+SKIP : {
+	" " 
+	|"\r" 
+	|"\t" 
+	|"\n"
+}
+
+//Función principal del programa
+boolean ejecutarAnalisis () : {} {
+	//try {
+		sentencias()
+	/*} catch (ParseException ex) {
+		System.out.println("Error sintactico en el programa.");
+		registraErrorSintactico("Error sintactico en el programa.", ex.currentToken.next);
+	}*/
+}
+
+//Función con las posibles sentencias
+void sentencias () : {} {
+	(
+	declaracionVariables()
+	//|crearTabla()
+	|impresionDeDatos()
+	|sentenciaIf()
+	|sentenciaFor()
+	|sentenciaWhile()
+	|crearFunciones()
+	)*
+}
+
+//Esta gramática permite la declaración de variables
+void declaracionVariables () : {
+	int [] tokensIzquierda = {};
+	int [] tokensDerecha = {FUNCTION, WHILE, FOR, IF, PRINT};
+} {
+	try {
+		<IDENTIFICADOR>(multipleIdentificador())*<ASIGNACION>(LOOKAHEAD(2)(tipoDato()(multipleTipoDato())*)|operacionesAritmeticas()(multiplesOperacionesAritmeticas())*)(<DELIMITADOR>)?
+	} catch (ParseException ex) {
+		System.out.println("Problema en variable");
+		registraErrorSintactico("Error sintactico, en la declaracion de una o mas variables.", ex.currentToken.next);
+		skipTo(tokensIzquierda, tokensDerecha);
+	}
+}
+
+//Esta gramatica se usa cuando se declaran varios tipos de datos en una sola línea
+void multipleIdentificador () : {} {
+	<COMA><IDENTIFICADOR>
+}
+
+//Esta gramatica complementa la anterior, sirve para asignar múltiples valores de la forma :  x, y = 1, 2;
+void multipleTipoDato () : {} {
+	<COMA>tipoDato()
+}
+
+//Esta gramatica se encarga de realizar multiples operaciones aritmeticas de asignacion en una sola linea, puede ocurrir o no
+void multiplesOperacionesAritmeticas () : {} {
+	<COMA>operacionesAritmeticas()
+}
+
+//Esta gramática invoca los distintos tipos de dato
+void tipoDato () : {} {
+	<VALOR_ENTERO>
+	|<VALOR_FLOTANTE>
+	|<VALOR_CADENA>
+	|<VALOR_CARACTER>
+}
+
+//Esta gramatica se encarga de la impresion de datos
+void impresionDeDatos () : {
+	int [] tokensIzquierda = {};
+	int [] tokensDerecha = {PARENTESIS_CIERRE};
+} {
+	try {
+		<PRINT><PARENTESIS_APERTURA>(tipoDato()|<IDENTIFICADOR>)<PARENTESIS_CIERRE>(<DELIMITADOR>)?
+	} catch (ParseException ex) {
+		System.out.println("Problema en impresion");
+		registraErrorSintactico("Error sintactico, problema en la impresion de datos.", ex.currentToken.next);
+		skipTo(tokensIzquierda, tokensDerecha);
+	}
+}
+
+//Esta gramatica se encarga de la creacion de tablas
+void crearTabla () : {
+	int [] tokensIzquierda = {};
+	int [] tokensDerecha = {IDENTIFICADOR, FUNCTION, WHILE, FOR, IF, PRINT};
+} {
+	try {
+		<IDENTIFICADOR><ASIGNACION><LLAVE_APERTURA>(valoresDeTabla())?<LLAVE_CIERRE>(<DELIMITADOR>)?
+	} catch (ParseException ex) {
+		System.out.println("Problema en tabla");
+		registraErrorSintactico("Error sintactico, problema en la creacion de una tabla.", ex.currentToken.next);
+		skipTo(tokensIzquierda, tokensDerecha);
+	}
+}
+
+//Esta gramatica apoya agrupando los posibles valores de un tabla 
+void valoresDeTabla () : {} {
+	tipoDato()(<COMA>tipoDato())*
+}
+
+//Esta es la gramatica general para un if
+void sentenciaIf() : {
+	int [] tokensIzquierda = {};
+	int [] tokensDerecha = {FUNCTION, FOR, WHILE};
+} {
+	try {
+		<IF>sentenciaComparacion()<THEN>sentencias()(sentenciaElseIf())*(sentenciaElse())*<END>
+	} catch (ParseException ex) {
+		System.out.println("Problema en if");
+		registraErrorSintactico("Error sintactico, problema en un if.", ex.currentToken.next);
+		skipTo(tokensIzquierda, tokensDerecha);
+	}
+}
+
+//Esta gramatica ayuda agrupando condicionales, para hacer mas facil invocarlos de manera multiple
+void sentenciaComparacion () : {} {
+	tiposComparables()comparadores()tiposComparables()(<COMA>tiposComparables()comparadores()tiposComparables())*
+}
+
+//Esta gramatica solo agrupa los posibles tipos de datos o variables
+void tiposComparables () : {} {
+	tipoDato()|<IDENTIFICADOR>
+}
+
+//Esta gramatica agrupa los tokens que sirven para comparar valores
+void comparadores () : {} {
+	<IGUAL_A>
+	|<DIFERENTE>
+	|<MAYOR>
+	|<MENOR>
+	|<MENOR_IGUAL>
+	|<MAYOR_IGUAL>
+	|<AND_LOGICO>
+	|<OR_LOGICO>
+}
+
+//Esta gramatica es para los elseif, puede o no incluirse
+void sentenciaElseIf () : {} {
+	<ELSEIF>tiposComparables()comparadores()tiposComparables()<THEN>sentencias()
+}
+
+//Esta gramatica es para los else, puede o no venir
+void sentenciaElse () : {} {
+	<ELSE>sentencias()
+}
+
+//Esta es la gramatica general para un for
+void sentenciaFor () : {
+	int [] tokensIzquierda = {};
+	int [] tokensDerecha = {FUNCTION, WHILE, IF};
+} {
+	try {
+		<FOR><IDENTIFICADOR><ASIGNACION>(<VALOR_ENTERO>|<VALOR_FLOTANTE>)<COMA>tiposDatosFor()<DO>sentencias()<END>
+	} catch (ParseException ex) {
+		System.out.println("Problema en for");
+		registraErrorSintactico("Error sintactico, problema en un for.", ex.currentToken.next);
+		skipTo(tokensIzquierda, tokensDerecha);
+	}
+}
+
+//Esta gramatica agrupa los tipos de datos que se pueden usar en un for
+void tiposDatosFor () : {} {
+	<IDENTIFICADOR>
+	|<VALOR_ENTERO>
+	|<VALOR_FLOTANTE>
+}
+
+//Esta es la gramatica general para un while
+void sentenciaWhile () : {
+	int [] tokensIzquierda = {};
+	int [] tokensDerecha = {FUNCTION, FOR, IF};
+} {
+	try {
+		<WHILE>(sentenciaComparacion()|<TRUE>)<DO>sentencias()<END>
+	} catch (ParseException ex) {
+		System.out.println("Problema en while");
+		registraErrorSintactico("Error sintactico, problema en un while.", ex.currentToken.next);
+		skipTo(tokensIzquierda, tokensDerecha);
+	}
+}
+
+//Esta gramatica se encarga de la creacion de funciones
+void crearFunciones () : {
+	int [] tokensIzquierda = {};
+	int [] tokensDerecha = {FOR, WHILE, IF};
+} {
+	try {
+		<FUNCTION><IDENTIFICADOR><PARENTESIS_APERTURA>(parametrosFuncion())?<PARENTESIS_CIERRE>cuerpoFuncion()(sentenciaReturn())?<END>
+	} catch (ParseException ex) {
+		System.out.println("Problema en funcion");
+		registraErrorSintactico("Error sintactico, problema en una funcion.", ex.currentToken.next);
+		skipTo(tokensIzquierda, tokensDerecha);
+	}
+}
+
+//Esta gramatica se encarga de los parametros de la funcion, de 0 a n
+void parametrosFuncion () : {} {
+	<IDENTIFICADOR>(<COMA><IDENTIFICADOR>)*
+}
+
+//Esta gramatica se encarga de operaciones dentro de funciones
+void cuerpoFuncion () : {} {
+	(LOOKAHEAD(3)declaracionVariablesFuncion()
+	|crearTablaFuncion()
+	|impresionDeDatos()
+	|sentenciaIf()
+	|sentenciaFor()
+	|sentenciaWhile()
+	)*
+}
+
+//Esta gramatica auxilia para creacion de variables dentro de una funcion (locales)
+void declaracionVariablesFuncion () : {} {
+	<LOCAL>declaracionVariables()
+}
+
+//Esta gramatica auxilia para la creacion de tablas dentro de una funcion (locales)
+void crearTablaFuncion () : {} {
+	<LOCAL>crearTabla()
+}
+
+//Esta gramatica ayuda a realizar un retorno sencillo o complejo
+void sentenciaReturn () : {} {
+	<RETURN>(tipoDato()|<IDENTIFICADOR>)(<DELIMITADOR>)?
+}
+
+//Esta gramatica ayuda a realizar multiples operaciones aritmeticas en una sola sentencia
+void operacionesAritmeticas () : {} {
+	(tipoDato()|<IDENTIFICADOR>)operadoresAritmeticos()(tipoDato()|<IDENTIFICADOR>)(operadoresAritmeticos()(tipoDato()|<IDENTIFICADOR>))*
+}
+
+//Esta gramatica ayuda agrupando los operadores aritmeticos
+void operadoresAritmeticos () : {} {
+	<SUMA>|<RESTA>|<DIVISION>|<MULTIPLICACION>|<MODULO>
+}
